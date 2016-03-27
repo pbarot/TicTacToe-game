@@ -51,5 +51,17 @@
     <Image Include="TicTacToe.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\..\Pictures\fcb.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Downloads\Dakirby309-Windows-8-Metro-Apps-Visual-Studio-alt-Metro.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icon2.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Pictures\close-file.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

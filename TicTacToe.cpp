@@ -131,7 +131,7 @@ int gameBoard[9] = { 0,0,0,0,0,0,0,0,0 };
 int playerTurn = 1;
 int winner = 0;
 int wins[3];
-
+int x = 2;
 
 BOOL GetGameBoardRect(HWND hwnd, RECT * pRect)
 {
@@ -230,6 +230,48 @@ int GetWinner(int wins[3])
 }
 
 
+void ShowTurn(HWND hWnd, HDC hdc)
+{
+	RECT rc;
+	static const WCHAR szTurn1[] = L"Turn: Player 1";
+	static const WCHAR szTurn2[] = L"Turn: Player 2";
+
+	const WCHAR*pszTurnText = NULL;
+	switch (winner)
+	{
+	case 0:
+		pszTurnText= (playerTurn == 1) ? szTurn1 : szTurn2;
+		break;
+	case 1:
+		pszTurnText = L"Player 1 is the winner";
+		break;
+	case 2:
+		pszTurnText = L"Player 2 is the winner";
+		break;
+	case 3:
+		pszTurnText = L"It's a draw";
+		break;
+	}
+	if (NULL!=pszTurnText && GetClientRect(hWnd, &rc))
+	{
+		rc.top = rc.bottom - 48;
+		FillRect(hdc, &rc, (HBRUSH)GetStockObject(GRAY_BRUSH));
+		SetTextColor(hdc, RGB(255, 255, 255));
+		SetBkMode(hdc, TRANSPARENT);
+		DrawText(hdc, pszTurnText, lstrlen(pszTurnText), &rc, DT_CENTER);
+
+	}
+}
+void DrawIconCentered(HDC hdc, RECT *pRect, HICON hIcon)
+{
+
+	if (NULL != pRect)
+	{
+		int left=pRect->left + ((pRect->right-pRect->left)-32)/2;
+		int top= pRect-> top + ((pRect->bottom-pRect->top)-32)/2;
+		DrawIcon(hdc, left, top, hIcon);
+	}
+}
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -240,6 +282,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		hbr1 = CreateSolidBrush(RGB(255, 0, 0));
 		hbr2 = CreateSolidBrush(RGB(0, 0, 255));
+	
+		hIcon1 = LoadIcon(hInst, MAKEINTRESOURCE(ID_PLAYER1));
+		hIcon2 = LoadIcon(hInst, MAKEINTRESOURCE(ID_PLAYER2));
+
 	}
 	break;
     case WM_COMMAND:
@@ -298,8 +344,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{
 					gameBoard[index] = playerTurn;
 
-					FillRect(hdc, &rcCell, (playerTurn==1) ? hbr1 : hbr2);
-
+					//FillRect(hdc, &rcCell, (playerTurn==1) ? hbr1 : hbr2);
+					DrawIconCentered(hdc, &rcCell, (playerTurn == 1) ? hIcon1 : hIcon2);
 					winner = GetWinner(wins);
 					if (winner == 1 || winner == 2)
 					{
@@ -316,6 +362,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					{
 						playerTurn = (playerTurn == 1) ? 2 : 1;
 					}
+					ShowTurn(hWnd, hdc);
 					}
 
 
@@ -342,6 +389,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			if (GetGameBoardRect(hWnd, &rc))
 			{
+				RECT rcClient;
+
+
+				if (GetClientRect(hWnd, &rcClient))
+				{
+					const WCHAR szPlayer1 [] = L"Player 1";
+					const WCHAR szPlayer2 []= L"Player 2";
+					
+					SetBkMode(hdc, TRANSPARENT);
+
+					SetTextColor(hdc, RGB(255, 255, 0));
+					TextOut(hdc, 16, 16, szPlayer1, 8);
+					SetTextColor(hdc, RGB(0, 0, 255));
+					TextOut(hdc, rcClient.right-72, 16, szPlayer2, 8);
+					ShowTurn(hWnd, hdc);
+
+				}
+
+
 				FillRect(hdc, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
 				//Rectangle(hdc, rc.left, rc.top, rc.right, rc.bottom);
 			}
@@ -359,8 +425,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				if ((0!=gameBoard[i]) && GetCellRect(hWnd, i, &rcCell))
 				{
 
-					FillRect(hdc, &rcCell, (gameBoard[i]==2) ? hbr2 : hbr1);
-					playerTurn = (playerTurn == 1) ? 1 : 2;
+					//FillRect(hdc, &rcCell, (gameBoard[i]==2) ? hbr2 : hbr1);
+					DrawIconCentered(hdc, &rcCell, (gameBoard[i] == 1) ? hIcon1 : hIcon2);
+
 				}
 
 
@@ -372,6 +439,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY:
 		DeleteObject(hbr1);
 		DeleteObject(hbr2);
+		DestroyIcon(hIcon1);
+		DestroyIcon(hIcon2);
         PostQuitMessage(0);
         break;
     default:

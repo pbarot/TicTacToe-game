@@ -163,6 +163,10 @@
     <ResourceCompile Include="TicTacToe.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\Downloads\Dakirby309-Windows-8-Metro-Apps-Visual-Studio-alt-Metro.ico" />
+    <Image Include="..\..\Pictures\close-file.ico" />
+    <Image Include="..\..\Pictures\fcb.jpg" />
+    <Image Include="icon2.ico" />
     <Image Include="small.ico" />
     <Image Include="TicTacToe.ico" />
   </ItemGroup>
