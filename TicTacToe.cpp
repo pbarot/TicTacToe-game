@@ -259,6 +259,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					ZeroMemory(gameBoard, sizeof(gameBoard));
 					 
 					InvalidateRect(hWnd, NULL, TRUE);
+					UpdateWindow(hWnd);
 				}
 			}
 			break;
